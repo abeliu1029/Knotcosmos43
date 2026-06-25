@@ -7,7 +7,8 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 
 export default defineConfig({
-  site: 'https://knotcosmos.com',
+  site: 'https://knotcosmos.com',   // ✅ 只保留 site
+  // base 不能出现，默认就是 '/'
   integrations: [mdx(), sitemap()],
   markdown: {
     remarkPlugins: [remarkMath],
