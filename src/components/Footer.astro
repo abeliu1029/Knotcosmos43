@@ -1,0 +1,55 @@
+---
+const today = new Date();
+---
+
+<footer style="
+  padding: 2em 1em 6em 1em;
+  background: var(--bg-color)!important;
+  color: rgb(var(--gray))!important;
+  text-align: center;
+  border-top: 1px solid var(--border-color)!important;
+  margin-top: 50px;
+  transition: all 0.3s ease!important;
+  width: 100%;
+">
+  <div class="copyright" style="
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: rgb(var(--gray))!important;
+    text-align: center;
+    width: 100%;
+  ">
+    &copy; {today.getFullYear()} by AbelLiu. All rights reserved.
+  </div>
+
+  <div class="visit-stats" style="
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: rgb(var(--gray))!important;
+    text-align: center;
+    width: 100%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  ">
+    <span id="busuanzi_container_site_pv">
+      📊 <span data-i18n="footer.pv">总访问量</span>: <span id="busuanzi_value_site_pv" class="pv-count" style="
+        font-weight: bold;
+        color: var(--link-hover-color)!important;
+      ">...</span>
+    </span>
+    <span class="separator" style="
+      margin: 0 8px;
+      color: rgb(var(--gray))!important;
+    ">•</span>
+    <span id="busuanzi_container_site_uv">
+      👥 <span data-i18n="footer.uv">访客数</span>: <span id="busuanzi_value_site_uv" class="uv-count" style="
+        font-weight: bold;
+        color: #10b981!important;
+      ">...</span>
+    </span>
+  </div>
+</footer>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>

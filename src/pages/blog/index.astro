@@ -1,0 +1,274 @@
+---
+export const prerender = true;
+
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import Header from '../../components/Header.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
+
+
+const allPosts = await getCollection('blog');
+
+const sortedPosts = allPosts.sort((a, b) => new Date(b.data.pubDate || '1970-01-01').valueOf() - new Date(a.data.pubDate || '1970-01-01').valueOf());
+
+const zhPosts = sortedPosts.filter(post => post.id.endsWith('zh'));
+const enPosts = sortedPosts.filter(post => post.id.endsWith('en'));
+---
+
+<!doctype html>
+<html lang="zh">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<style is:global>
+			
+			:root {
+				--black: 17, 24, 39;
+				--gray: 107, 114, 128;
+				--accent: 0, 112, 243;
+				--box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+				--bg-color: #ffffff;
+				--content-bg: #ffffff; 
+			}
+
+			html[data-theme="dark"] {
+				--black: 229, 231, 235;
+				--gray: 156, 163, 175;
+				--accent: 59, 130, 246;
+				--box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3);
+				--bg-color: #1a1a1a;
+				--content-bg: #1a1a1a; 
+			}
+
+			* {
+				box-sizing: border-box;
+				margin: 0;
+				padding: 0;
+				transition: color 0.3s ease, 
+							box-shadow 0.3s ease,
+							background-color 0.3s ease,
+							border-color 0.3s ease;
+			}
+
+			html, body {
+				background-color: var(--bg-color);
+				min-height: 100vh;
+				margin: 0;
+				padding: 0;
+			}
+
+			main {
+				width: 960px;
+				margin: 0 auto; 
+				padding: 2rem 1rem;
+				background-color: var(--content-bg);
+				max-width: 100%;
+			}
+
+			section {
+				width: 100%;
+				background-color: transparent; 
+			}
+
+			ul {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 2rem;
+				list-style-type: none;
+				margin: 0;
+				padding: 0;
+				width: 100%; 
+				background-color: transparent; 
+			}
+
+			ul li {
+				width: calc(50% - 1rem);
+				background-color: transparent;
+				overflow: hidden;
+			}
+
+			ul li:first-child {
+				width: 100%;
+				margin-bottom: 1rem;
+				text-align: center;
+				padding: 0;
+				margin: 0 0 1.5rem 0;
+			}
+
+			ul li:first-child img {
+				width: 100%;
+				max-width: 100%;
+				height: auto;
+				display: block; 
+				border-radius: 12px;
+				box-shadow: var(--box-shadow);
+			}
+
+			ul li:first-child .title {
+				font-size: 2.369rem;
+				margin-top: 0.8rem; 
+			}
+
+			ul li img {
+				margin-bottom: 0.5rem;
+				border-radius: 12px;
+				max-width: 100%;
+				height: auto;
+				display: block; 
+				box-shadow: 0 2px 4px -1px rgb(0 0 0 / 0.05);
+			}
+
+			html[data-theme="dark"] ul li img {
+				box-shadow: 0 2px 4px -1px rgb(0 0 0 / 0.2);
+			}
+
+			ul li a {
+				display: block;
+				width: 100%;
+				background-color: transparent; 
+			}
+
+			.title {
+				margin: 0;
+				color: rgb(var(--black));
+				line-height: 1.2; 
+			}
+
+			.date {
+				margin: 0.3rem 0 0 0; 
+				color: rgb(var(--gray));
+				font-size: 0.95rem;
+			}
+
+			ul li a:hover h4,
+			ul li a:hover .date {
+				color: rgb(var(--accent));
+			}
+
+			ul a:hover img {
+				box-shadow: var(--box-shadow);
+				transform: scale(1.01);
+			}
+
+			@media (max-width: 720px) {
+				main {
+					width: 100%;
+					padding: 1.5rem 0.8rem; 
+				}
+				ul {
+					gap: 1rem; 
+				}
+				ul li {
+					width: 100%;
+					text-align: center;
+					margin-bottom: 1.5rem; 
+				}
+				ul li:first-child {
+					margin-bottom: 1.5rem;
+				}
+				ul li:first-child .title {
+					font-size: 1.563em;
+				}
+				ul li img {
+					border-radius: 8px; 
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		
+		<main>
+			<section>
+				<ul id="blog-list-zh" data-lang="zh">
+					{zhPosts.length === 0 ? (
+						<li style="width: 100%; text-align: center; color: rgb(var(--gray));">暂无中文博文</li>
+					) : (
+						zhPosts.map((post) => (
+							<li key={post.id}>
+								<a href={`/blog/${post.id}/`}>
+									{post.data.heroImage && (
+										<Image 
+											width={720} 
+											height={360} 
+											src={post.data.heroImage} 
+											alt={post.data.title} 
+											loading="lazy" 
+											style={{objectFit: 'cover'}} 
+										/>
+									)}
+									<h4 class="title">{post.data.title}</h4>
+									<p class="date">
+										<FormattedDate date={post.data.pubDate} />
+									</p>
+								</a>
+							</li>
+						))
+					)}
+				</ul>
+
+				<ul id="blog-list-en" data-lang="en" style="display:none">
+					{enPosts.length === 0 ? (
+						<li style="width: 100%; text-align: center; color: rgb(var(--gray));">No English posts</li>
+					) : (
+						enPosts.map((post) => (
+							<li key={post.id}>
+								<a href={`/blog/${post.id}/`}>
+									{post.data.heroImage && (
+										<Image 
+											width={720} 
+											height={360} 
+											src={post.data.heroImage} 
+											alt={post.data.title} 
+											loading="lazy" 
+											style={{objectFit: 'cover'}} 
+										/>
+									)}
+									<h4 class="title">{post.data.title}</h4>
+									<p class="date">
+										<FormattedDate date={post.data.pubDate} />
+									</p>
+								</a>
+							</li>
+						))
+					)}
+				</ul>
+			</section>
+		</main>
+		<Footer />
+
+		
+			<script is:inline>
+
+				document.addEventListener('DOMContentLoaded', function() {
+					const langToggleBtn = document.getElementById('lang-toggle-btn');
+					if (langToggleBtn) {
+						langToggleBtn.addEventListener('click', function() {
+							const newLang = localStorage.getItem('preferred-lang') === 'zh' ? 'en' : 'zh';
+							localStorage.setItem('preferred-lang', newLang);
+							document.cookie = `preferred-lang=${newLang}; path=/; max-age=31536000; SameSite=Lax`;
+							setTimeout(() => window.location.reload(), 50);
+						});
+					}
+
+					const localLang = localStorage.getItem('preferred-lang') || 'zh';
+					const cookieLang = document.cookie.split('; ').find(row => row.startsWith('preferred-lang='))?.split('=')[1] || 'zh';
+					if (localLang !== cookieLang) {
+						document.cookie = `preferred-lang=${localLang}; path=/; max-age=31536000; SameSite=Lax`;
+						window.location.reload();
+					}
+
+					const updatePostsVisibility = (lang) => {
+						document.documentElement.lang = lang === 'zh' ? 'zh' : 'en';
+						document.querySelectorAll('[data-lang]').forEach(el => {
+							el.style.display = el.getAttribute('data-lang') === lang ? '' : 'none';
+						});
+					};
+
+					updatePostsVisibility(localLang);
+				});
+			</script>
+	</body>
+</html>

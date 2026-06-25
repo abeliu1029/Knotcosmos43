@@ -1,0 +1,46 @@
+---
+import { type CollectionEntry, getCollection, render } from 'astro:content';
+import BlogPost from '../../layouts/BlogPost.astro';
+
+
+export async function getStaticPaths() {
+	const posts = await getCollection('blog');
+	return posts.map((post) => ({
+		params: { slug: post.id },
+		props: {
+			...post,
+			
+			lang: post.id.endsWith('zh') ? 'zh' : 'en'
+		}, 
+	}));
+}
+
+type Props = CollectionEntry<'blog'> & { lang: string };
+
+const post = Astro.props;
+const { Content } = await render(post);
+
+
+const allPosts = await getCollection('blog');
+
+const langPosts = allPosts
+	.filter(p => p.id.endsWith(post.lang))
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const currentIndex = langPosts.findIndex(p => p.id === post.id);
+
+const prevPost = currentIndex < langPosts.length - 1 ? langPosts[currentIndex + 1] : null;
+const nextPost = currentIndex > 0 ? langPosts[currentIndex - 1] : null;
+
+
+const postWithNav = {
+	...post,
+	prevPost,
+	nextPost
+};
+---
+
+
+<BlogPost {...postWithNav}>
+	<Content />
+</BlogPost>

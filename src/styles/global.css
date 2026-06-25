@@ -1,0 +1,211 @@
+
+:root {
+ 
+  --content-max-width: 1000px;
+  --content-padding: 2rem;
+  --page-horizontal-padding: 1rem;
+  --main-vertical-padding: 2rem;
+  --header-padding: 0 0.5rem;
+  --footer-padding: 2rem 1rem;
+  --footer-margin-top: 3rem;
+  --home-main-margin: 2rem auto;
+  --home-main-padding: 0 1.5rem;
+  --home-avatar-margin: 0 auto 1.5rem;
+  --home-avatar-padding: 0 1rem;
+
+ 
+  --bg-color: #ffffff;
+  --text-color: #2c3e50;
+  --gray: 107, 114, 128;
+  --gray-dark: 17, 24, 39;
+  --border-color: #e5e7eb;
+  --shadow-color: rgba(0,0,0,0.1);
+  --link-color: #0070f3;
+  --link-hover-color: #3b82f6;
+  --success-color: #10b981;
+  --header-shadow: rgba(51, 51, 51, 0.05);
+  --hover-bg: #f3f4f6;
+  --button-bg: transparent;
+  --button-text: #333333;
+  --button-hover-bg: #f3f4f6;
+  --active-border: #0070f3;
+}
+
+
+html[data-theme="dark"] {
+  --bg-color: #1a1a1a;
+  --text-color: #e5e7eb;
+  --gray: 156, 163, 175;
+  --gray-dark: 229, 231, 235;
+  --border-color: #374151;
+  --shadow-color: rgba(0,0,0,0.3);
+  --link-color: #3b82f6;
+  --link-hover-color: #60a5fa;
+  --success-color: #34d399;
+  --header-shadow: rgba(229, 231, 235, 0.1);
+  --hover-bg: #2d2d2d;
+  --button-bg: transparent;
+  --button-text: #e5e7eb;
+  --button-hover-bg: #2d2d2d;
+  --active-border: #3b82f6;
+}
+
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  
+  transition: 
+    background-color 0.3s ease, 
+    color 0.3s ease, 
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    all 0.2s ease !important;
+}
+
+html, body {
+  background-color: var(--bg-color)!important;
+  color: var(--text-color)!important;
+  min-height: 100vh;
+  padding: 0 !important; 
+}
+
+
+.content-wrapper {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 var(--page-horizontal-padding);
+}
+
+header {
+  background-color: var(--bg-color)!important;
+  border-color: var(--border-color)!important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: var(--header-padding) !important; 
+}
+
+main, footer, .article-container, .hero-image {
+  background-color: var(--bg-color)!important;
+  border-color: var(--border-color)!important;
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  width: 100%;
+}
+
+main {
+  padding: var(--main-vertical-padding) var(--page-horizontal-padding);
+  margin: 0 auto;
+}
+
+footer {
+  border-top: 1px solid var(--border-color)!important;
+  color: rgb(var(--gray))!important;
+  padding: var(--footer-padding);
+  margin-top: var(--footer-margin-top);
+}
+
+
+h1, h2, h3, h4, h5, h6, p, span, div, li, a {
+  color: var(--text-color)!important;
+  background-color: transparent!important;
+}
+
+a {
+  color: var(--link-color)!important;
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--link-hover-color)!important;
+}
+
+img {
+  background-color: transparent!important;
+}
+
+
+.home-main {
+  max-width: var(--content-max-width);
+  width: 100%;
+  margin: var(--home-main-margin) !important;
+  padding: var(--home-main-padding) !important;
+  text-align: center !important;
+}
+
+.home-main h1,
+.home-main p,
+.home-main div {
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.home-avatar {
+  width: 100%;
+  max-width: 500px !important;
+  margin: var(--home-avatar-margin) !important;
+  padding: var(--home-avatar-padding) !important;
+  box-sizing: border-box !important; 
+}
+
+.home-avatar img {
+  display: block !important;
+  margin: 0 auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important; 
+}
+
+.home-post-item,
+.home-more-link {
+  width: fit-content !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+
+.pv-count {
+  color: var(--link-hover-color)!important;
+}
+
+.uv-count {
+  color: var(--success-color)!important;
+}
+
+.separator {
+  color: rgb(var(--gray))!important;
+}
+
+
+@media (max-width: 1200px) {
+  :root {
+    --content-max-width: 900px;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --content-max-width: 700px;
+    --content-padding: 1.5rem;
+    --main-vertical-padding: 1.5rem;
+    --page-horizontal-padding: 0.5rem;
+    --header-padding: 0 0.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --content-max-width: 100%;
+    --content-padding: 1rem;
+    --main-vertical-padding: 1rem;
+    --page-horizontal-padding: 0.5rem;
+    --header-padding: 0;
+    --home-main-padding: 0 1rem;
+    --footer-padding: 1.5rem 0.75rem;
+    --footer-margin-top: 2rem;
+  }
+}

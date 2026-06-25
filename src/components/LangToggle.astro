@@ -1,0 +1,69 @@
+---
+// src/components/LangToggle.astro
+---
+
+<button 
+  class="lang-toggle-btn" 
+  aria-label="切换语言"
+  data-i18n="lang.toggle"
+  id="lang-toggle-btn"
+  style="
+    
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    background: #2563eb !important;
+    color: white !important; 
+    border: 1px solid #1d4ed8 !important;
+    padding: 8px 16px !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    font-size: 14px !important;
+    z-index: 9999 !important; 
+    position: fixed !important; 
+    top: 20px !important;
+    right: 20px !important;
+  "
+>
+  EN
+</button>
+
+<style is:global>
+ 
+  .lang-toggle-btn {
+    
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    
+    background-color: #2563eb;
+    color: white !important;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    
+    position: relative;
+    z-index: 10;
+    
+    transition: all 0.2s ease;
+  }
+
+  .lang-toggle-btn:hover {
+    background-color: #1d4ed8;
+    transform: translateY(-1px);
+  }
+
+  .lang-toggle-btn:active {
+    transform: translateY(0);
+  }
+
+
+  .lang-toggle-btn:not(:disabled) {
+    opacity: 1;
+    visibility: visible;
+  }
+</style>

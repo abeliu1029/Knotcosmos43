@@ -1,0 +1,106 @@
+---
+export const prerender = true;
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog');
+const sortedPosts = allPosts.sort((a, b) => {
+  const dateA = new Date(a.data.pubDate || '1970-01-01');
+  const dateB = new Date(b.data.pubDate || '1970-01-01');
+  return dateB.getTime() - dateA.getTime();
+});
+
+// Render both language lists at build time and let client-side JS
+// choose which to show. Default server render uses Chinese.
+const zhPosts = sortedPosts.filter(p => p.id.endsWith('zh'));
+const enPosts = sortedPosts.filter(p => p.id.endsWith('en'));
+const latestZh = zhPosts.slice(0, 4);
+const latestEn = enPosts.slice(0, 4);
+---
+
+<BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+  <main class="home-main">
+    
+    <h1 data-i18n="home.hello">你好，朋友!</h1>
+    <p class="home-desc" data-i18n="home.desc">
+      欢迎来到我的个人博客，这里会分享我的学习和生活点滴。
+    </p>
+
+    <div class="home-avatar">
+      <img 
+        src="./a1.png"  
+        alt="个人头像" 
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+
+    <p class="home-post-label" data-i18n="home.latestPosts">
+      最新博客:
+    </p>
+
+    <div class="home-posts" data-lang="zh">
+      {latestZh.map((post) => (
+        <p class="home-post-item" key={post.id}>
+          <a href={`/blog/${post.id}`}>{post.data.title}</a>
+        </p>
+      ))}
+    </div>
+
+    <div class="home-posts" data-lang="en" style="display:none">
+      {latestEn.map((post) => (
+        <p class="home-post-item" key={post.id}>
+          <a href={`/blog/${post.id}`}>{post.data.title}</a>
+        </p>
+      ))}
+    </div>
+
+    <p class="home-more-link">
+      <a href="/blog/" data-i18n="home.more">
+        更多
+      </a>
+    </p>
+  </main>
+
+  
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', function() {
+
+      const localLang = localStorage.getItem('preferred-lang') || 'zh';
+      const cookieLang = document.cookie.split('; ').find(row => row.startsWith('preferred-lang='))?.split('=')[1] || 'zh';
+      
+      if (localLang !== cookieLang) {
+        document.cookie = `preferred-lang=${localLang}; path=/; max-age=31536000; SameSite=Lax`;
+        window.location.reload();
+      }
+
+      const langToggleBtn = document.getElementById('lang-toggle-btn');
+      if (langToggleBtn) {
+        langToggleBtn.addEventListener('click', function() {
+          setTimeout(() => window.location.reload(), 50);
+        });
+      }
+
+      const updateHomeText = (lang) => {
+        document.querySelector('[data-i18n="home.hello"]').textContent = lang === 'zh' ? '你好，朋友!' : 'Hello, Friend!';
+        document.querySelector('[data-i18n="home.desc"]').textContent = lang === 'zh' 
+          ? '欢迎来到我的个人博客，这里会分享我的学习和生活点滴。' 
+          : 'Welcome to my personal blog, where I share my learning and life moments.';
+        document.querySelector('[data-i18n="home.latestPosts"]').textContent = lang === 'zh' ? '最新博客:' : 'Latest Posts:';
+        document.querySelector('[data-i18n="home.more"]').textContent = lang === 'zh' ? '更多' : 'More';
+        document.querySelector('.home-avatar img').alt = lang === 'zh' ? '个人头像' : 'Personal Avatar';
+      };
+
+      const updatePostsVisibility = (lang) => {
+        document.querySelectorAll('.home-posts').forEach(el => {
+          el.style.display = el.getAttribute('data-lang') === lang ? '' : 'none';
+        });
+      };
+
+      updateHomeText(localLang);
+      updatePostsVisibility(localLang);
+    });
+  </script>
+</BaseLayout>

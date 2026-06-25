@@ -1,0 +1,666 @@
+---
+// src/pages/about.astro
+export const prerender = true;
+
+import AboutHeroImage from '../assets/toe.png';
+import Layout from '../layouts/BlogPost.astro';
+import 'katex/dist/katex.min.css';
+
+// ─────────────────────────────────────────
+// 🌐 翻译配置
+// ─────────────────────────────────────────
+const translations = {
+  zh: {
+    meta: {
+      title: '关于我 - 理论物理研究者',
+      description: '专注量子力学几何诠释与统一场论研究。探索 SO(16,3)、M16 矩阵框架与 U(3) 几何统一模型。',
+    },
+    hero: {
+      title: '研究概览',
+      imageAlt: '关于我 - 研究介绍'
+    },
+    lastUpdated: '最后更新：2026年5月',
+    
+    collectionCard: {
+      id: 'collection',
+      title: '📚 研究论文合集 & 技术档案',
+      body: '这里汇总了当前所有已发表的理论推导、预印本及技术笔记。包含 SO(16,3) 对称性破缺机制、M16 矩阵算子构造细节以及 U(3) 几何模型的完整数学附录。<br/><br/>建议研究人员通过此入口获取最新的 LaTeX 源码与数据集。',
+      link: { text: '🗂️ 访问 Zenodo 研究档案库', href: 'https://doi.org/10.5281/zenodo.19450034' } 
+    },
+    sections: [
+      {
+        id: 'overview',
+        title: '🔬 研究主旨',
+        key: 'content1',
+        body: '致力于基础物理框架的重构，核心方向为量子力学的几何诠释与大统一理论。<br/><br/>' +
+              '当前研究主要围绕三个核心模型展开：<strong>SO(16,3) 对称性统一理论</strong>、<strong>M16 矩阵量子框架</strong>以及<strong>基于 U(3) 对称群的动力学破缺几何统一模型</strong>。<br/><br/>' +
+              '旨在通过严格的数学结构，以极简的几何语言揭示引力、规范场与物质场的深层统一机制。',
+        link: { text: '📄 查看研究日志', href: '/blog' }
+      },
+      {
+        id: 'so16',
+        title: '🌌 SO(16,3) 统一理论',
+        key: 'content2',
+        body: '该理论将引力推广为三种类型，形成「引力家族」，与规范力的三种类型形成的「规范力家族」构成两个对称扇区：SO(6,3) 和 SO(10)。<br/><br/>' +
+              '<strong>SO(6,3) 分解</strong>：SO(6,3) → SO(3,1) × SO(2,1) × SO(1,1)，分别对应爱因斯坦张量引力、矢量引力、标量引力。<br/><br/>' +
+              '<strong>SO(10) 分解</strong>：SO(10) → SU(5) → 标准模型群，自然嵌入粒子物理框架。',
+        link: { text: '📖 阅读详细推导', href: 'https://doi.org/10.5281/zenodo.17914716' }
+      },
+      {
+        id: 'm16',
+        title: '🔷 M16 矩阵量子框架',
+        key: 'content3',
+        body: '基于矩阵函数量子力学（MFQM），以有限维正定矩阵为基本自由度，引入 Z4 循环对称性构造修正狄拉克算子。该算子自伴且自动蕴含 CPT 与粒子–反粒子对称。<br/><br/>' +
+              '在 <span class="math">N=16</span> 框架下实现四力统一涌现：对角块对应引力，非对角块对应规范场（SU(3)×SU(2)×U(1)），并自然导出爱因斯坦与杨–米尔斯方程。',
+        link: { text: '📐 查看矩阵模型论文', href: 'https://doi.org/10.5281/zenodo.19450034' }
+      },
+      {
+        id: 'u3',
+        title: '🌀 U(3) 几何统一模型',
+        key: 'content4',
+        body: '提出基于三维复流形与 <span class="math">U(3)</span> 对称群的动力学破缺统一模型。摒弃传统大统一理论扩大群维度或引入高维时空的路径，通过严格区分对称性三个层级实现统一：<br/><br/>' +
+              '<strong>(1) 本体论层级</strong> (<span class="math">U(3)</span>)：通过霍奇分解天然划分夸克与轻子，统一强力与原初超荷；<br/>' +
+              '<strong>(2) 动力学层级</strong> (<span class="math">U(2,1)→ U(2)</span>)：号差破缺涌现引力几何，<span class="math">U(2)</span> 统一弱力与超荷；<br/>' +
+              '<strong>(3) 对偶层级</strong> (<span class="math">U(1,2)</span>)：被因果律抑制的双时间分支以几何张力形式表现为暗能量。<br/><br/>' +
+              '该模型以数学极简性天然规避质子衰变难题与弦论真空景观困境。',
+        link: { text: '🌌 探索动力学破缺机制', href: 'https://doi.org/10.5281/zenodo.19401977' }
+      }
+    ]
+  },
+  en: {
+    meta: {
+      title: 'About Me - Theoretical Physics Researcher',
+      description: 'Exploring geometric quantum mechanics and unified field theory. Investigating SO(16,3), M16 matrix framework, and U(3) geometric unification.',
+    },
+    hero: {
+      title: 'Research Overview',
+      imageAlt: 'About Me - Research Introduction'
+    },
+    lastUpdated: 'Last updated: May 2026',
+
+    collectionCard: {
+      id: 'collection',
+      title: '📚 Research Papers & Technical Archive',
+      body: 'A comprehensive collection of all published theoretical derivations, preprints, and technical notes. Includes detailed mechanisms of SO(16,3) symmetry breaking, M16 matrix operator construction, and full mathematical appendices for the U(3) geometric model.<br/><br/>Researchers are encouraged to access the latest LaTeX sources and datasets via this entry.',
+      link: { text: '🗂️ Visit Zenodo Archive', href: 'https://doi.org/10.5281/zenodo.19450034' } 
+    },
+    sections: [
+      {
+        id: 'overview',
+        title: '🔬 Research Focus',
+        key: 'content1',
+        body: 'Dedicated to reconstructing the framework of fundamental physics, with a core focus on the geometric interpretation of quantum mechanics and Grand Unified Theory (GUT).<br/><br/>' +
+              'Current research centers on three primary models: the <strong>SO(16,3) Symmetry Unified Theory</strong>, the <strong>M16 Matrix Quantum Framework</strong>, and the <strong>Dynamical Symmetry Breaking Geometric Model based on U(3)</strong>.<br/><br/>' +
+              'The goal is to reveal the deep unification mechanisms of gravity, gauge fields, and matter fields through rigorous mathematical structures and minimalist geometric language.',
+        link: { text: '📄 View Research Log', href: '/blog' }
+      },
+      {
+        id: 'so16',
+        title: '🌌 SO(16,3) Unified Theory',
+        key: 'content2',
+        body: 'This theory extends gravity into three types forming a "gravity family", paired with three gauge forces to create symmetric sectors: SO(6,3) and SO(10).<br/><br/>' +
+              '<strong>SO(6,3) Decomposition</strong>: SO(6,3) → SO(3,1) × SO(2,1) × SO(1,1), corresponding to Einstein tensor, vector, and scalar gravity.<br/><br/>' +
+              '<strong>SO(10) Decomposition</strong>: SO(10) → SU(5) → Standard Model groups.',
+        link: { text: '📖 Read Detailed Derivation', href: 'https://doi.org/10.5281/zenodo.17914716' }
+      },
+      {
+        id: 'm16',
+        title: '🔷 M16 Matrix Quantum Framework',
+        key: 'content3',
+        body: 'Built on Matrix Function Quantum Mechanics (MFQM), this framework uses finite-dimensional positive-definite matrices as fundamental degrees of freedom, anchored by Z4 cyclic symmetry to construct a modified Dirac operator. It is self-adjoint and automatically generates CPT and particle-antiparticle symmetry.<br/><br/>' +
+              'In the <span class="math">N=16</span> framework, it achieves unified emergence of four forces: diagonal blocks yield gravity, off-diagonal blocks yield gauge fields (SU(3)×SU(2)×U(1)), naturally deriving Einstein and Yang-Mills equations. ',
+        link: { text: '📐 View Matrix Model Paper', href: 'https://doi.org/10.5281/zenodo.19450034' }
+      },
+      {
+        id: 'u3',
+        title: '🌀 U(3) Geometric Unification Model',
+        key: 'content4',
+        body: 'Proposes a dynamical symmetry breaking unified field theory based on a 3D complex manifold  and the <span class="math">U(3)</span> symmetry group. Departing from traditional GUTs or string theory, it unifies interactions through a strict three-tier structure:<br/><br/>' +
+              '<strong>(1) Ontological</strong> (<span class="math">U(3)</span>): Hodge decomposition naturally classifies quarks/leptons, unifying strong and primordial hypercharge forces;<br/>' +
+              '<strong>(2) Dynamical</strong> (<span class="math">U(2,1)→ U(2)</span>): Signature breaking emerges gravitational geometry, with <span class="math">U(2)</span> unifying weak and hypercharge;<br/>' +
+              '<strong>(3) Dual</strong> (<span class="math">U(1,2)</span>): The causally suppressed dual-time branch manifests as dark energy via geometric tension.<br/><br/>' +
+              'This mathematically minimalist framework naturally avoids proton decay and the string landscape problem.',
+        link: { text: '🌌 Explore Dynamical Breaking', href: 'https://doi.org/10.5281/zenodo.19429393' }
+      }
+    ]
+  }
+} as const;
+
+// ─────────────────────────────────────────
+// 🔐 类型安全 + 语言检测
+// ─────────────────────────────────────────
+type Lang = keyof typeof translations;
+const getSafeLang = (val?: string): Lang => 
+  ['zh', 'en'].includes(val || '') ? (val as Lang) : 'zh';
+
+const currentLang = getSafeLang(Astro.cookies.get('preferred-lang')?.value);
+const t = translations[currentLang];
+
+// 📦 客户端数据
+const clientData = JSON.stringify(
+  Object.fromEntries(
+    Object.entries(translations).map(([lang, data]) => [
+      lang,
+      { 
+        metaTitle: data.meta.title,
+        heroTitle: data.hero.title,
+        lastUpdated: data.lastUpdated,
+        collectionCard: data.collectionCard,
+        sections: data.sections.map(s => ({ 
+          id: s.id, 
+          title: s.title,
+          key: s.key, 
+          body: s.body, 
+          link: s.link 
+        })) 
+      }
+    ])
+  )
+);
+---
+
+<Layout
+  title={t.meta.title}
+  description={t.meta.description}
+  pubDate={new Date('2026-01-26')}
+  heroImage={AboutHeroImage}
+  heroImageAlt={t.hero.imageAlt}
+  lang={currentLang}
+>
+  <!-- 📦 安全数据注入载体 -->
+  <script type="application/json" id="about-data" set:html={clientData} />
+
+  <!-- 🎯 页面标题 -->
+  <h1 class="about-title" id="main-hero-title">{t.hero.title}</h1>
+
+  <!-- 📚 内容区域：采用 Grid 布局 -->
+  <article class="about-grid">
+    
+    <!-- 全宽论文合集卡片 -->
+    <section 
+      class="research-card collection-card"
+      aria-labelledby="heading-collection"
+    >
+      <div class="card-header">
+        <h2 
+          id="heading-collection" 
+          class="card-title collection-title"
+          data-section-title-id="collection"
+        >
+          {t.collectionCard.title}
+        </h2>
+      </div>
+      
+      <div class="card-body">
+        <p 
+          class="section-text" 
+          data-i18n="about.collectionBody"
+          set:html={t.collectionCard.body}
+        />
+      </div>
+
+      <div class="card-footer">
+        <a 
+          href={t.collectionCard.link.href} 
+          class="card-link primary-link" 
+          data-section-link="collection"
+        >
+          {t.collectionCard.link.text} <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- 常规研究板块 -->
+    {t.sections.map((section) => (
+      <section 
+        key={section.id} 
+        class="research-card"
+        aria-labelledby={`heading-${section.id}`}
+      >
+        <div class="card-header">
+          <h2 
+            id={`heading-${section.id}`} 
+            class="card-title"
+            data-section-title-id={section.id}
+          >
+            {section.title}
+          </h2>
+        </div>
+        
+        <div class="card-body">
+          <p 
+            class="section-text" 
+            data-i18n={`about.${section.key}`}
+            set:html={section.body}
+          />
+        </div>
+
+        {section.link && (
+          <div class="card-footer">
+            <a href={section.link.href} class="card-link" data-section-link={section.id}>
+              {section.link.text} <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        )}
+      </section>
+    ))}
+  </article>
+
+  <!-- ✅ 新增：页面底部更新时间 -->
+  <footer class="page-footer">
+    <p class="last-updated" data-i18n="about.lastUpdated">{t.lastUpdated}</p>
+  </footer>
+
+  <!-- 🌐 客户端逻辑 -->
+  <script is:inline>
+    (() => {
+      const dataEl = document.getElementById('about-data');
+      if (!dataEl) return;
+      
+      let data = {};
+      try {
+        data = JSON.parse(dataEl.textContent || '{}');
+      } catch (e) {
+        console.error('[i18n] JSON Parse Error', e);
+        return;
+      }
+
+      const defaultLang = 'zh';
+      
+      const getLang = () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlLang = urlParams.get('lang');
+        if (urlLang && ['zh', 'en'].includes(urlLang)) return urlLang;
+
+        const cookie = document.cookie.split('; ').find(r => r.startsWith('preferred-lang='))?.split('=')[1];
+        if (cookie && ['zh', 'en'].includes(cookie)) return cookie;
+
+        const local = localStorage.getItem('preferred-lang');
+        if (local && ['zh', 'en'].includes(local)) return local;
+
+        return defaultLang;
+      };
+      
+      const renderMath = () => {
+        if (typeof katex === 'undefined') { 
+          setTimeout(renderMath, 50); 
+          return; 
+        }
+        document.querySelectorAll('.section-text .math').forEach(el => {
+          if (el.dataset.katexRendered) return;
+          const tex = el.textContent.trim();
+          if (!tex) return;
+          const displayMode = el.classList.contains('math-display');
+          try {
+            el.innerHTML = '';
+            katex.render(tex, el, { throwOnError: false, displayMode });
+            el.dataset.katexRendered = 'true';
+          } catch (err) {
+            console.warn('[KaTeX] Render failed:', tex, err);
+          }
+        });
+      };
+      
+      const updateContent = (lang) => {
+        const langData = data[lang];
+        if (!langData) return;
+
+        if (langData.metaTitle) {
+          document.title = langData.metaTitle;
+        }
+
+        const mainTitleEl = document.getElementById('main-hero-title');
+        if (mainTitleEl && langData.heroTitle) {
+          mainTitleEl.textContent = langData.heroTitle;
+        }
+
+        if (langData.collectionCard) {
+          const collTitleEl = document.querySelector(`[data-section-title-id="collection"]`);
+          if (collTitleEl) collTitleEl.textContent = langData.collectionCard.title;
+
+          const collBodyEl = document.querySelector(`[data-i18n="about.collectionBody"]`);
+          if (collBodyEl) {
+            collBodyEl.innerHTML = langData.collectionCard.body;
+            collBodyEl.dataset.katexRendered = '';
+          }
+
+          const collLinkEl = document.querySelector(`[data-section-link="collection"]`);
+          if (collLinkEl && langData.collectionCard.link) {
+            collLinkEl.href = langData.collectionCard.link.href;
+            collLinkEl.innerHTML = `${langData.collectionCard.link.text} <span aria-hidden="true">→</span>`;
+          }
+        }
+
+        const updatedEl = document.querySelector(`[data-i18n="about.lastUpdated"]`);
+        if (updatedEl && langData.lastUpdated) {
+          updatedEl.textContent = langData.lastUpdated;
+        }
+
+        langData.sections.forEach(({ id, title, key, body, link }) => {
+          const titleEl = document.querySelector(`[data-section-title-id="${id}"]`);
+          if (titleEl) titleEl.textContent = title;
+
+          const bodyEl = document.querySelector(`[data-i18n="about.${key}"]`);
+          if (bodyEl) {
+            bodyEl.innerHTML = body;
+            bodyEl.dataset.katexRendered = ''; 
+          }
+          
+          const linkEl = document.querySelector(`[data-section-link="${id}"]`);
+          if (linkEl && link) {
+            linkEl.href = link.href;
+            linkEl.innerHTML = `${link.text} <span aria-hidden="true">→</span>`;
+          }
+        });
+        
+        document.documentElement.lang = lang;
+        renderMath();
+      };
+      
+      document.addEventListener('DOMContentLoaded', () => {
+        const lang = getLang();
+        updateContent(lang);
+        
+        const toggleBtn = document.getElementById('lang-toggle-btn');
+        if (toggleBtn) {
+          toggleBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const current = getLang();
+            const newLang = current === 'zh' ? 'en' : 'zh';
+            
+            localStorage.setItem('preferred-lang', newLang);
+            document.cookie = `preferred-lang=${newLang}; path=/; max-age=31536000; SameSite=Lax`;
+            
+            const els = document.querySelectorAll('[data-i18n], .card-title, #main-hero-title');
+            els.forEach(el => { 
+              el.style.transition = 'opacity 0.15s ease'; 
+              el.style.opacity = '0.5'; 
+            });
+            
+            setTimeout(() => {
+              updateContent(newLang);
+              els.forEach(el => el.style.opacity = '1');
+            }, 150);
+          });
+        }
+      });
+      
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'preferred-lang' && e.newValue) {
+          updateContent(e.newValue);
+        }
+      });
+    })();
+  </script>
+</Layout>
+
+<style>
+  /* 🎨 全局标题 */
+  .about-title {
+    font-size: 2.25rem;
+    text-align: center;
+    margin: 2.5rem 0 3.5rem;
+    color: var(--color-text, #1a1a1a);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  /* 🕸️ 网格布局容器 */
+  .about-grid {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 1.5rem 2rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+
+  /* 🃏 统一卡片样式：直接复用合集卡片的渐变逻辑 */
+  .research-card {
+    /* 亮色模式：极淡的蓝色渐变，通透感 */
+    background: linear-gradient(to right, rgba(37, 99, 235, 0.03), rgba(37, 99, 235, 0.08));
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    border-radius: 12px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s;
+    height: 100%;
+  }
+
+  /* ✅ 暗色模式：深色半透明渐变，自动适配 */
+  @media (prefers-color-scheme: dark) {
+    .research-card {
+      background: linear-gradient(to right, rgba(37, 99, 235, 0.1), rgba(37, 99, 235, 0.2));
+      border: 1px solid rgba(37, 99, 235, 0.4);
+    }
+  }
+
+  .research-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--color-primary, #2563eb);
+    box-shadow: 0 12px 24px -10px rgba(37, 99, 235, 0.15);
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    .research-card:hover {
+      box-shadow: 0 12px 24px -10px rgba(37, 99, 235, 0.25);
+    }
+  }
+
+  /* ✅ 合集卡片特殊样式 (保持稍微突出一点，颜色更深一点点) */
+  .collection-card {
+    grid-column: 1 / -1;
+    /* 亮色：比普卡稍深一点的蓝 */
+    background: linear-gradient(to right, rgba(37, 99, 235, 0.06), rgba(37, 99, 235, 0.12));
+    border: 1px solid rgba(37, 99, 235, 0.3);
+  }
+  
+  /* ✅ 暗色模式下的合集卡片 */
+  @media (prefers-color-scheme: dark) {
+    .collection-card {
+      background: linear-gradient(to right, rgba(37, 99, 235, 0.15), rgba(37, 99, 235, 0.25));
+      border: 1px solid rgba(37, 99, 235, 0.5);
+    }
+  }
+  
+  .collection-card:hover {
+    border-color: var(--color-primary, #2563eb);
+    box-shadow: 0 12px 24px -10px rgba(37, 99, 235, 0.2);
+  }
+
+  .collection-title {
+    color: var(--color-primary-dark, #1e40af);
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    .collection-title {
+      color: #93c5fd;
+    }
+  }
+
+  .primary-link {
+    font-weight: 600;
+    color: var(--color-primary-dark, #1e40af);
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    .primary-link {
+      color: #93c5fd;
+    }
+  }
+
+  /* 📌 卡片头部 */
+  .card-header {
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(37, 99, 235, 0.1);
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    .card-header {
+      border-bottom-color: rgba(37, 99, 235, 0.3);
+    }
+  }
+
+  .card-title {
+    font-size: 1.35rem;
+    margin: 0;
+    color: var(--color-primary, #2563eb);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    .card-title {
+      color: #60a5fa;
+    }
+  }
+
+  /* 📝 卡片正文 */
+  .card-body {
+    flex-grow: 1;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-text {
+    line-height: 1.75;
+    color: var(--color-text-secondary, #4b5563);
+    font-size: 0.95rem;
+    margin: 0;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    .section-text {
+      color: #d1d5db;
+    }
+  }
+
+  .section-text strong {
+    color: var(--color-text, #1f2937);
+    font-weight: 600;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    .section-text strong {
+      color: #f3f4f6;
+    }
+  }
+
+  /* 🔗 卡片底部链接 */
+  .card-footer {
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px dashed rgba(37, 99, 235, 0.15);
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    .card-footer {
+      border-top-color: rgba(37, 99, 235, 0.3);
+    }
+  }
+
+  .card-link {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-primary, #2563eb);
+    text-decoration: none;
+    transition: color 0.2s, transform 0.2s;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    .card-link {
+      color: #60a5fa;
+    }
+  }
+  
+  .card-link:hover {
+    color: var(--color-primary-dark, #1d4ed8);
+    transform: translateX(4px);
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    .card-link:hover {
+      color: #93c5fd;
+    }
+  }
+  
+  .card-link span {
+    margin-left: 0.25rem;
+    transition: transform 0.2s;
+  }
+  
+  .card-link:hover span {
+    transform: translateX(2px);
+  }
+
+  /* ✅ KaTeX 公式样式优化 */
+  .section-text .math {
+    font-family: 'KaTeX_Math', 'Times New Roman', serif;
+    white-space: nowrap;
+    color: var(--color-text, #111827);
+    padding: 0 2px;
+    background: rgba(37, 99, 235, 0.05);
+    border-radius: 4px;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    .section-text .math {
+      color: #f3f4f6;
+      background: rgba(96, 165, 250, 0.15);
+    }
+  }
+  
+  .section-text .math-display {
+    display: block;
+    margin: 1rem 0;
+    text-align: center;
+    overflow-x: auto;
+    background: transparent;
+  }
+
+  /* ✅ 页面底部 Footer 样式 */
+  .page-footer {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+    text-align: center;
+  }
+
+  .last-updated {
+    font-size: 0.85rem;
+    color: var(--color-text-tertiary, #9ca3af);
+    font-style: italic;
+    margin: 0;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    .last-updated {
+      color: #6b7280;
+    }
+  }
+
+  /* 📱 响应式调整 */
+  @media (max-width: 768px) {
+    .about-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      padding: 0 1rem 2rem;
+    }
+    
+    .about-title { 
+      font-size: 1.75rem; 
+      margin: 1.5rem 0 2rem; 
+    }
+    
+    .research-card {
+      padding: 1.5rem;
+    }
+    
+    .card-title {
+      font-size: 1.25rem;
+    }
+  }
+</style>

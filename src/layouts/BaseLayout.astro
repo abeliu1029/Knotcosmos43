@@ -1,0 +1,60 @@
+---
+// src/layouts/BaseLayout.astro
+import UmamiAnalytics from '../components/UmamiAnalytics.astro';
+import '../styles/global.css'; 
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta 
+    name="viewport" 
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" 
+  />
+  <meta name="description" content={description} />
+  <title>{title}</title>
+  <UmamiAnalytics />
+  
+ 
+</head>
+<body>
+  <Header />
+  <div class="page-container">
+    <slot /> 
+  </div>
+  <Footer />
+
+ 
+  <script is:inline>
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      
+      if (window.i18n) {
+        
+        document.documentElement.lang = window.i18n.getCurrentLang() === 'en' ? 'en-US' : 'zh-CN';
+       
+        window.i18n.initI18n();
+        window.i18n.initLangToggle();
+        
+        
+        window.addEventListener('language-change', () => {
+          window.i18n.initI18n();
+          document.documentElement.lang = window.i18n.getCurrentLang() === 'en' ? 'en-US' : 'zh-CN';
+        });
+      } else {
+        
+      }
+    });
+  </script>
+</body>
+</html>

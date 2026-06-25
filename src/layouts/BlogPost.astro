@@ -1,0 +1,665 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import Header from '../components/Header.astro';
+import UmamiAnalytics from '../components/UmamiAnalytics.astro';
+import Giscus from '../components/Comments/Giscus.astro';
+import 'katex/dist/katex.min.css';
+
+type BlogPostProps = CollectionEntry<'blog'> | (CollectionEntry<'blog'>['data'] & { id?: string });
+const props = Astro.props as BlogPostProps;
+
+const postData = 'data' in props ? props.data : props;
+const postId = 'id' in props ? props.id : props.id || ''; 
+const { title, description, pubDate, updatedDate, heroImage } = postData || {};
+const { url } = Astro;
+
+const isBlogPage = url.pathname.startsWith('/blog/');
+const allPosts = await getCollection('blog');
+
+
+const currentLang = postId.endsWith('zh') ? 'zh' : 'en';
+
+const langPosts = allPosts
+  .filter(post => post.id.endsWith(currentLang)) 
+  .sort((a, b) => new Date(b.data.pubDate || '1970-01-01').getTime() - new Date(a.data.pubDate || '1970-01-01').getTime());
+
+
+const currentIndex = postId ? langPosts.findIndex(post => post.id === postId) : -1;
+const prevPost = currentIndex > 0 ? langPosts[currentIndex - 1] : null;
+const nextPost = currentIndex < langPosts.length - 1 ? langPosts[currentIndex + 1] : null;
+
+
+let pageLang = 'zh';
+if (postId.endsWith('en')) {
+  pageLang = 'en';
+}
+
+// 找到对应语言的文章 ID（用于客户端跳转）
+const baseId = postId ? postId.replace(/(zh|en)$/i, '') : '';
+const otherSuffix = pageLang === 'zh' ? 'en' : 'zh';
+const counterpart = allPosts.find(p => p.id.toLowerCase() === (baseId + otherSuffix).toLowerCase());
+const counterpartId = counterpart ? counterpart.id : null;
+---
+
+<html lang={pageLang}> <!-- 修复：页面语言跟随博文语言 -->
+	<head>
+		<BaseHead title={title} description={description} />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+		
+		<style is:global>
+			
+			.katex-display {
+				display: block !important;
+				margin: 1.5em 0 !important;
+				overflow-x: auto !important;
+				overflow-y: hidden !important;
+				padding: 1em 0.5em !important;
+				text-align: center !important;
+				-webkit-overflow-scrolling: touch !important;
+				max-width: 100% !important;
+				width: 100% !important;
+				box-sizing: border-box !important;
+			}
+
+			.katex-display > .katex {
+				display: inline-block !important;
+				text-align: center !important;
+				max-width: 100% !important;
+				white-space: nowrap !important;
+				padding: 0.5em !important;
+			}
+
+			.katex {
+				font-size: 1.1em !important;
+				max-width: 100% !important;
+				overflow-wrap: break-word !important;
+				word-wrap: break-word !important;
+			}
+
+			.katex-display::-webkit-scrollbar {
+				height: 8px;
+			}
+
+			.katex-display::-webkit-scrollbar-track {
+				background: rgba(0, 0, 0, 0.05);
+				border-radius: 4px;
+			}
+
+			.katex-display::-webkit-scrollbar-thumb {
+				background: rgba(0, 0, 0, 0.2);
+				border-radius: 4px;
+			}
+
+			html[data-theme="dark"] .katex-display::-webkit-scrollbar-track {
+				background: rgba(255, 255, 255, 0.05);
+			}
+
+			html[data-theme="dark"] .katex-display::-webkit-scrollbar-thumb {
+				background: rgba(255, 255, 255, 0.2);
+			}
+
+			
+			main {
+				flex: 1;
+				width: 100%;
+				max-width: 100%;
+				margin: 0;
+				padding: 20px 0;
+				background-color: transparent;
+			}
+
+			.article-container {
+				width: 100%;
+				max-width: var(--content-max-width);
+				margin: 0 auto;
+				padding: 0 20px;
+				background-color: transparent;
+			}
+
+			.hero-image {
+				width: 100%;
+				margin-bottom: 2em;
+				background-color: transparent;
+				padding: 0;
+			}
+
+			.hero-image img {
+				display: block;
+				width: 100%;
+				height: auto;
+				margin: 0 auto;
+				border-radius: 12px;
+				box-shadow: var(--box-shadow);
+				object-fit: cover;
+				line-height: 0;
+				background: transparent !important;
+			}
+
+			.article-header {
+				width: 100%;
+				text-align: center;
+				margin-bottom: 2em;
+				padding-bottom: 1.5em;
+				border-bottom: 1px solid var(--border-color);
+				background-color: transparent;
+			}
+
+			.article-header h1 {
+				font-size: clamp(1.8rem, 5vw, 2.5rem);
+				line-height: 1.3;
+				margin: 0.5em 0;
+				overflow-wrap: break-word;
+				word-wrap: break-word;
+				word-break: break-word;
+				hyphens: auto;
+				color: rgb(var(--gray-dark));
+			}
+
+			.article-meta {
+				color: rgb(var(--gray));
+				font-size: 0.95rem;
+				margin-bottom: 1em;
+			}
+
+			.last-updated {
+				font-style: italic;
+				margin-top: 0.5em;
+			}
+
+			.article-body {
+				width: 100%;
+				line-height: 1.7;
+				font-size: 1rem;
+				color: rgb(var(--gray-dark));
+				background-color: transparent;
+			}
+
+			.article-body * {
+				max-width: 100%;
+				overflow-wrap: break-word;
+				word-wrap: break-word;
+			}
+
+			.article-body p .katex {
+				white-space: nowrap;
+			}
+
+			.article-body ul,
+			.article-body ol {
+				padding-left: 1.5em;
+				margin-bottom: 1.2em;
+			}
+
+			.article-body li {
+				margin-bottom: 0.5em;
+				color: rgb(var(--gray-dark));
+			}
+
+			.article-body pre {
+				max-width: 100%;
+				overflow-x: auto;
+				margin: 1.5em 0;
+				padding: 1em;
+				border-radius: 8px;
+				background-color: rgba(0, 0, 0, 0.03);
+				font-size: 0.9em;
+				line-height: 1.5;
+				-webkit-overflow-scrolling: touch;
+			}
+
+			.article-body code:not(pre code) {
+				padding: 0.2em 0.4em;
+				border-radius: 4px;
+				background-color: rgba(0, 0, 0, 0.05);
+				font-size: 0.9em;
+				word-break: break-all;
+			}
+
+			.article-body table {
+				display: block;
+				overflow-x: auto;
+				max-width: 100%;
+				margin: 1.5em 0;
+				border-collapse: collapse;
+				-webkit-overflow-scrolling: touch;
+			}
+
+			.article-body th,
+			.article-body td {
+				padding: 0.5em 0.75em;
+				border: 1px solid var(--border-color);
+				word-break: break-word;
+				color: rgb(var(--gray-dark));
+			}
+
+			.article-body img {
+				max-width: 100%;
+				height: auto;
+				display: block;
+				margin: 1.5em auto;
+				border-radius: 8px;
+				background: transparent !important;
+			}
+
+			.article-body blockquote {
+				margin: 1.5em 0;
+				padding: 1em 1.5em;
+				border-left: 4px solid var(--accent);
+				background-color: rgba(0, 112, 243, 0.05);
+				border-radius: 0 8px 8px 0;
+				font-style: italic;
+				color: rgb(var(--gray-dark));
+			}
+
+			.comments-section {
+				width: 100%;
+				max-width: var(--content-max-width);
+				margin: 3em auto 0;
+				padding: 2em 20px;
+				border-top: 1px solid var(--border-color);
+				background-color: transparent;
+			}
+
+			.post-nav {
+				width: 100%;
+				max-width: var(--content-max-width);
+				margin: 3em auto;
+				padding: 1.5em 20px;
+				border-top: 1px solid var(--border-color);
+				border-bottom: 1px solid var(--border-color);
+				display: flex;
+				justify-content: space-between;
+				gap: 1em;
+				background-color: transparent;
+			}
+
+			.post-nav-btn {
+				display: flex;
+				align-items: center;
+				gap: 0.75em;
+				padding: 0.75em 1em;
+				background: var(--bg-color);
+				border: 1px solid var(--border-color);
+				border-radius: 8px;
+				color: rgb(var(--gray-dark));
+				text-decoration: none;
+				transition: all 0.2s ease;
+				max-width: 48%;
+				flex: 1;
+			}
+
+			.post-nav-btn:hover {
+				background: rgba(0, 112, 243, 0.05);
+				border-color: var(--accent);
+				color: var(--accent);
+			}
+
+			.post-nav-btn.disabled {
+				opacity: 0.5;
+				cursor: not-allowed;
+				pointer-events: none;
+			}
+
+			.post-nav-icon {
+				font-size: 1rem;
+				flex-shrink: 0;
+			}
+
+			.post-nav-title {
+				font-size: 0.9rem;
+				line-height: 1.4;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
+				word-break: break-word;
+			}
+
+			.post-nav-label {
+				font-size: 0.8rem;
+				opacity: 0.8;
+				margin-bottom: 0.25em;
+				white-space: nowrap;
+			}
+
+			.post-nav-btn > div {
+				flex: 1;
+				min-width: 0;
+				overflow: hidden;
+			}
+
+			.post-nav.single-btn {
+				justify-content: center;
+			}
+
+			.post-nav.single-btn .post-nav-btn {
+				max-width: 60%;
+			}
+
+			/* 暗色模式适配 */
+			html[data-theme="dark"] .article-body pre {
+				background-color: rgba(255, 255, 255, 0.05);
+			}
+
+			html[data-theme="dark"] .article-body code:not(pre code) {
+				background-color: rgba(255, 255, 255, 0.1);
+			}
+
+			html[data-theme="dark"] .article-body blockquote {
+				background-color: rgba(0, 112, 243, 0.1);
+			}
+
+			html[data-theme="dark"] .post-nav-btn:hover {
+				background: rgba(0, 112, 243, 0.1);
+			}
+
+			/* 响应式适配 */
+			@media (max-width: 768px) {
+				.article-container {
+					padding: 0 15px;
+				}
+
+				.article-header h1 {
+					font-size: clamp(1.5rem, 6vw, 2rem);
+					padding: 0 0.5em;
+				}
+
+				.article-body {
+					font-size: 0.95rem;
+					padding: 0 0.5em;
+				}
+
+				.article-body h1 { font-size: 1.6em; }
+				.article-body h2 { font-size: 1.4em; }
+				.article-body h3 { font-size: 1.2em; }
+
+				.katex-display {
+					padding: 0.75em 0.25em !important;
+					margin: 1em 0 !important;
+					font-size: 0.95em !important;
+				}
+
+				.katex {
+					font-size: 1em !important;
+				}
+
+				.katex-display > .katex {
+					padding: 0.25em !important;
+				}
+
+				.hero-image img {
+					border-radius: 8px;
+				}
+
+				.comments-section {
+					padding: 2em 15px;
+				}
+
+				.post-nav {
+					flex-direction: column;
+					gap: 1em;
+					margin: 2em auto;
+					padding: 1.5em 15px;
+				}
+
+				.post-nav.single-btn .post-nav-btn {
+					max-width: 100%;
+					width: 100%;
+				}
+
+				.post-nav-btn {
+					max-width: 100%;
+					width: 100%;
+				}
+
+				.post-nav-btn:last-child {
+					flex-direction: row-reverse;
+				}
+
+				.post-nav-title {
+					font-size: 0.85rem;
+				}
+			}
+
+			@media (max-width: 480px) {
+				.article-container {
+					padding: 0 12px;
+				}
+
+				.article-header h1 {
+					font-size: clamp(1.3rem, 7vw, 1.8rem);
+				}
+
+				.article-body {
+					font-size: 0.9rem;
+					line-height: 1.6;
+				}
+
+				.article-body h1 { font-size: 1.4em; }
+				.article-body h2 { font-size: 1.3em; }
+				.article-body h3 { font-size: 1.1em; }
+
+				.katex-display {
+					padding: 0.5em 0.15em !important;
+					margin: 0.75em 0 !important;
+					font-size: 0.9em !important;
+				}
+
+				.katex {
+					font-size: 0.95em !important;
+				}
+
+				.katex-display::-webkit-scrollbar {
+					height: 6px;
+				}
+
+				.article-body p {
+					text-align: left;
+				}
+
+				.comments-section {
+					padding: 1.5em 12px;
+				}
+
+				.post-nav {
+					padding: 1em 12px;
+					margin: 1.5em auto;
+				}
+
+				.post-nav-btn {
+					padding: 0.75em;
+				}
+
+				.post-nav-title {
+					font-size: 0.8rem;
+				}
+			}
+
+			@media (max-width: 360px) {
+				.article-container {
+					padding: 0 10px;
+				}
+
+				.article-header h1 {
+					font-size: clamp(1.2rem, 8vw, 1.6rem);
+				}
+
+				.article-body {
+					font-size: 0.85rem;
+				}
+
+				.article-body h1 { font-size: 1.3em; }
+				.article-body h2 { font-size: 1.2em; }
+				.article-body h3 { font-size: 1.1em; }
+
+				.katex-display {
+					padding: 0.4em 0.1em !important;
+					font-size: 0.85em !important;
+				}
+
+				.katex {
+					font-size: 0.9em !important;
+				}
+
+				.post-nav-label {
+					font-size: 0.75rem;
+				}
+
+				.post-nav-title {
+					font-size: 0.75rem;
+				}
+			}
+
+			@media (min-width: 1200px) {
+				.article-container {
+					max-width: min(1000px, 90vw);
+				}
+
+				.katex-display {
+					padding: 1em 1em !important;
+				}
+			}
+		</style>
+
+		<UmamiAnalytics />
+		
+		{isBlogPage && (
+			<script is:inline>
+				document.addEventListener('DOMContentLoaded', function() {
+					const mathDisplays = document.querySelectorAll('.katex-display');
+					mathDisplays.forEach((display) => {
+						display.classList.add('math-formula');
+						const katex = display.querySelector('.katex');
+						if (katex && katex.scrollWidth > display.clientWidth) {
+							display.classList.add('needs-scroll');
+							if (!display.querySelector('.scroll-hint')) {
+								const hint = document.createElement('div');
+								hint.className = 'scroll-hint';
+								hint.innerHTML = '← 滑动查看完整公式 →';
+								hint.style.cssText = `
+									font-size: 0.8em;
+									color: rgba(var(--gray), 0.7);
+									text-align: center;
+									margin-top: 0.5em;
+									font-style: italic;
+								`;
+								display.appendChild(hint);
+							}
+						}
+					});
+
+					let resizeTimer;
+					window.addEventListener('resize', function() {
+						clearTimeout(resizeTimer);
+						resizeTimer = setTimeout(function() {
+							mathDisplays.forEach((display) => {
+								const katex = display.querySelector('.katex');
+								if (katex) {
+									display.classList.toggle('needs-scroll', katex.scrollWidth > display.clientWidth);
+								}
+							});
+						}, 250);
+					});
+				});
+			</script>
+		)}
+	</head>
+
+	<body data-translation={counterpartId ?? ''}>
+		<Header />
+		<main>
+			<div class="article-container">
+				<article>
+					{heroImage && (
+						<div class="hero-image">
+							<Image 
+								width={1020} 
+								height={510} 
+								src={heroImage} 
+								alt={`${title} 的封面图`} 
+								loading="lazy"
+							/>
+						</div>
+					)}
+
+					<div class="article-header">
+						<div class="article-meta">
+							<FormattedDate date={pubDate} />
+							{updatedDate && (
+								<div class="last-updated">
+									Last updated on <FormattedDate date={updatedDate} />
+								</div>
+							)}
+						</div>
+						<h1>{title}</h1>
+					</div>
+
+					<div class="article-body">
+						<slot />
+					</div>
+
+					{isBlogPage && (prevPost || nextPost) && (
+						<div class={`post-nav ${(!prevPost || !nextPost) ? 'single-btn' : ''}`}>
+							{prevPost ? (
+								<a 
+									href={`/blog/${prevPost.id}`} 
+									class="post-nav-btn"
+									aria-label={`${pageLang === 'zh' ? '上一篇' : 'Previous Post'}: ${prevPost.data.title}`}
+								>
+									<span class="post-nav-icon">←</span>
+									<div>
+										<div class="post-nav-label">{pageLang === 'zh' ? '上一篇' : 'Previous Post'}</div>
+										<div class="post-nav-title">{prevPost.data.title}</div>
+									</div>
+								</a>
+							) : (
+								<div class="post-nav-btn disabled">
+									<span class="post-nav-icon">←</span>
+									<div>
+										<div class="post-nav-label">{pageLang === 'zh' ? '上一篇' : 'Previous Post'}</div>
+										<div class="post-nav-title">{pageLang === 'zh' ? '没有了' : 'No more posts'}</div>
+									</div>
+								</div>
+							)}
+
+							{nextPost ? (
+								<a 
+									href={`/blog/${nextPost.id}`} 
+									class="post-nav-btn"
+									aria-label={`${pageLang === 'zh' ? '下一篇' : 'Next Post'}: ${nextPost.data.title}`}
+								>
+									<div style={{textAlign: 'right'}}>
+										<div class="post-nav-label">{pageLang === 'zh' ? '下一篇' : 'Next Post'}</div>
+										<div class="post-nav-title">{nextPost.data.title}</div>
+									</div>
+									<span class="post-nav-icon">→</span>
+								</a>
+							) : (
+								<div class="post-nav-btn disabled">
+									<div style={{textAlign: 'right'}}>
+										<div class="post-nav-label">{pageLang === 'zh' ? '下一篇' : 'Next Post'}</div>
+										<div class="post-nav-title">{pageLang === 'zh' ? '没有了' : 'No more posts'}</div>
+									</div>
+									<span class="post-nav-icon">→</span>
+								</div>
+							)}
+						</div>
+					)}
+
+					{isBlogPage && (
+						<div class="comments-section">
+							<Giscus />
+						</div>
+					)}
+				</article>
+			</div>
+		</main>
+		<Footer />
+	</body>
+</html>

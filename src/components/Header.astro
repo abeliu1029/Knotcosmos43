@@ -1,0 +1,345 @@
+---
+import { SITE_TITLE } from '../consts';
+import HeaderLink from './HeaderLink.astro';
+import Logo from '../assets/logo.svg'; // ✅ 修复后
+---
+
+<script src="/i18n-client.js" is:inline></script>
+
+<header>
+	<nav>
+		<h2><a href="/" id="site-title-link" data-i18n="site.title"><Logo class="scale-75 dark:invert" />{SITE_TITLE}</a></h2>
+		<div class="internal-links">
+			<HeaderLink href="/" data-i18n="nav.home">首页</HeaderLink>
+			<HeaderLink href="/blog" data-i18n="nav.blog">博客</HeaderLink>
+			<HeaderLink href="/about" data-i18n="nav.about">关于</HeaderLink>
+
+			<button id="lang-toggle-btn" class="lang-toggle-btn" aria-label="切换语言" data-i18n="lang.toggle">
+				EN
+			</button>
+			<button id="theme-toggle" class="theme-toggle-btn" aria-label="切换暗色/亮色模式"></button>
+		</div>
+	</nav>
+</header>
+
+<style is:global>
+	/* 原有样式完全保留，无修改 */
+	header {
+		margin: 0;
+		padding: 0 1em;
+		background: var(--bg-color); 
+		box-shadow: 0 2px 8px var(--header-shadow);
+		transition: all 0.3s ease;
+		position: sticky;
+		top: 0;
+		z-index: 999;
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	h2 {
+		margin: 0;
+		font-size: 1em;
+		color: var(--text-color);
+	}
+
+	h2 a,
+	h2 a.active {
+		text-decoration: none;
+		color: var(--link-color);
+		transition: color 0.3s ease;
+	}
+
+	h2 a:hover {
+		color: var(--link-hover-color);
+	}
+
+	nav {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		max-width: 1600px; 
+		margin: 0 auto; 
+		padding: 0.5em 0;
+		width: 100%;
+		box-sizing: border-box;
+	}
+	
+	.internal-links {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		flex-shrink: 0;
+	}
+
+	nav a, .header-link {
+		padding: 0.75em 1em;
+		color: var(--link-color);
+		border-bottom: 3px solid transparent;
+		text-decoration: none;
+		transition: all 0.2s ease;
+		border-radius: 4px;
+		font-weight: 500;
+	}
+
+	nav a:hover, .header-link:hover {
+		background: var(--hover-bg);
+		color: var(--link-hover-color);
+	}
+
+	nav a.active, .header-link.active {
+		color: var(--link-hover-color);
+		border-bottom-color: var(--active-border);
+		font-weight: 600;
+	}
+
+	.lang-toggle-btn {
+		background: var(--button-bg);
+		border: none;
+		font-size: 1em;
+		cursor: pointer;
+		color: var(--button-text);
+		padding: 0.6rem 0.8rem;
+		border-radius: 4px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 44px;
+		min-height: 44px;
+		position: static;
+		overflow: visible;
+		font-weight: 500;
+		transition: all 0.2s ease;
+	}
+
+	.lang-toggle-btn:hover {
+		background: var(--button-hover-bg);
+		color: var(--link-hover-color);
+		transform: translateY(-1px);
+	}
+
+	.lang-toggle-btn:active {
+		transform: translateY(0);
+	}
+
+	.theme-toggle-btn {
+		background: var(--button-bg);
+		border: none;
+		font-size: 1.2em;
+		cursor: pointer;
+		color: var(--button-text);
+		padding: 0.6rem 0.8rem;
+		border-radius: 4px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 44px;
+		min-height: 44px;
+		position: static;
+		overflow: visible;
+		transition: all 0.2s ease;
+	}
+
+	.theme-toggle-btn:hover {
+		background: var(--button-hover-bg);
+		color: var(--link-hover-color);
+		transform: translateY(-1px);
+	}
+
+	.theme-toggle-btn:active {
+		transform: translateY(0);
+	}
+
+	.theme-toggle-btn span {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	@media (max-width: 720px) {
+		.internal-links {
+			gap: 0.3rem;
+		}
+		nav a, .header-link,
+		.theme-toggle-btn, .lang-toggle-btn {
+			padding: 0.5rem 0.6rem;
+			font-size: 0.95em;
+		}
+		.theme-toggle-btn, .lang-toggle-btn {
+			min-width: 40px;
+			min-height: 40px;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.internal-links {
+			gap: 0.2rem;
+		}
+		.theme-toggle-btn, .lang-toggle-btn {
+			min-width: 36px;
+			min-height: 36px;
+			padding: 0.4rem 0.5rem;
+			font-size: 0.9em;
+		}
+	}
+</style>
+
+<script is:inline>
+	(function() {
+		// ========== 核心配置：从全局I18N对象获取LOCALES ==========
+		const LOCALES = window.I18N?.LOCALES 
+
+		// ========== 工具函数：强制更新翻译 ==========
+		function forceUpdateTranslation(lang) {
+			// 1. 精准更新标题
+			const titleLink = document.getElementById('site-title-link');
+			if (titleLink) {
+				titleLink.textContent = LOCALES[lang]["site.title"];
+			}
+
+			// 2. 更新所有导航元素
+			document.querySelectorAll('[data-i18n]').forEach(el => {
+				const key = el.getAttribute('data-i18n');
+				if (LOCALES[lang][key] && el.id !== 'site-title-link') {
+					el.textContent = LOCALES[lang][key];
+				}
+			});
+
+			// 3. 更新语言按钮文本
+			const langToggle = document.getElementById('lang-toggle-btn');
+			if (langToggle) {
+				langToggle.textContent = lang === 'zh' ? 'EN' : '中文';
+			}
+
+			// 4. 更新浏览器标题
+			document.title = LOCALES[lang]["site.title"] || "My Blog";
+		}
+
+		// ========== 主题切换逻辑（无修改） ==========
+		function initTheme() {
+			const themeToggle = document.getElementById('theme-toggle');
+			const html = document.documentElement;
+
+			// 仅初始化一次，避免重复绑定
+			if (themeToggle && !themeToggle.dataset.initialized) {
+				themeToggle.dataset.initialized = 'true'; // 标记已初始化
+
+				// 更新主题图标（独立函数，不重复绑定）
+				const updateThemeIcon = (theme) => {
+					if (theme === 'dark') {
+						themeToggle.innerHTML = `<span class="theme-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></span>`;
+					} else {
+						themeToggle.innerHTML = `<span class="theme-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>`;
+					}
+				};
+
+				// 切换主题（独立函数，不重复创建）
+				const toggleTheme = () => {
+					const now = html.getAttribute('data-theme');
+					const next = now === 'dark' ? 'light' : 'dark';
+					html.setAttribute('data-theme', next);
+					localStorage.setItem('theme', next);
+					updateThemeIcon(next); // 只更新图标，不重新初始化
+				};
+
+				// 初始化主题
+				let savedTheme = localStorage.getItem('theme');
+				if (!savedTheme) {
+					savedTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+				}
+				html.setAttribute('data-theme', savedTheme);
+				updateThemeIcon(savedTheme);
+
+				// 绑定点击事件（仅绑定一次）
+				themeToggle.addEventListener('click', toggleTheme);
+				themeToggle.addEventListener('keydown', (e) => {
+					if (e.key === 'Enter' || e.key === ' ') {
+						e.preventDefault();
+						toggleTheme(); // 直接调用切换函数，不触发click
+					}
+				});
+
+				// 监听系统主题变化
+				window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+					if (!localStorage.getItem('theme')) {
+						const newTheme = e.matches ? 'dark' : 'light';
+						html.setAttribute('data-theme', newTheme);
+						updateThemeIcon(newTheme);
+					}
+				});
+			}
+		}
+
+		// ========== 语言切换逻辑（仅新增Cookie同步） ==========
+		function initLang() {
+			const langToggle = document.getElementById('lang-toggle-btn');
+			let currentLang = localStorage.getItem('preferred-lang') || 'zh';
+
+			// 立即更新翻译
+			forceUpdateTranslation(currentLang);
+
+			// 仅绑定一次点击事件
+			if (langToggle && !langToggle.dataset.initialized) {
+				langToggle.dataset.initialized = 'true';
+
+				langToggle.addEventListener('click', () => {
+					const newLang = currentLang === 'zh' ? 'en' : 'zh';
+					// 1. 更新localStorage（原有）
+					localStorage.setItem('preferred-lang', newLang);
+					// 2. 新增：同步设置Cookie（服务端能读取），有效期1年
+					document.cookie = `preferred-lang=${newLang}; path=/; max-age=31536000; SameSite=Lax`;
+					currentLang = newLang;
+					
+					// 强制更新翻译
+					forceUpdateTranslation(newLang);
+					setTimeout(() => forceUpdateTranslation(newLang), 100);
+					
+						// 新增：如果在单篇博文页面，尝试跳转到对应语言的翻译文章
+						const path = window.location.pathname;
+						if (path === '/blog') {
+							window.location.reload();
+						} else if (path.startsWith('/blog/')) {
+							const body = document.querySelector('body[data-translation]');
+							const targetId = body ? body.getAttribute('data-translation') : '';
+							if (targetId) {
+								// 跳转到翻译文章
+								window.location.href = `/blog/${targetId}`;
+							} else {
+								// 若没有映射，刷新当前页面以便页面内切换生效
+								window.location.reload();
+							}
+						}
+				});
+
+				langToggle.addEventListener('keydown', (e) => {
+					if (e.key === 'Enter' || e.key === ' ') {
+						e.preventDefault();
+						langToggle.click();
+					}
+				});
+			}
+
+			// DOM加载完成后再更新
+			document.addEventListener('DOMContentLoaded', () => {
+				forceUpdateTranslation(currentLang);
+			});
+
+			window.addEventListener('load', () => {
+				forceUpdateTranslation(currentLang);
+			});
+		}
+
+		// ========== 初始化：等待i18n脚本加载完成 ==========
+		if (window.I18N) {
+			// 脚本已加载，直接初始化
+			initLang();
+			initTheme();
+		} else {
+			// 脚本未加载完成，延迟初始化
+			window.addEventListener('load', () => {
+				initLang();
+				initTheme();
+			});
+		}
+	})();
+</script>
