@@ -2,11 +2,13 @@
 title: 'SO(16,3) Symmetry: Unification of Gravity and Gauge Forces'
 lang: en
 description: 'SO(16,3) Symmetry: Unification of Gravity and Gauge Forces'
+tags: ["physics", "Unification Theory"]
 pubDate: '2026-01-30'
 heroImage: ../../assets/so163.jpeg
 translation:
   zh: 'so163ZH'
 draft: false
+featured: true
 ---
 
 ## Abstract

@@ -2,12 +2,14 @@
 ---
 title: 'On the Uniqueness of Prime Solutions to Generalized Fermat Equations'
 lang: en
-description: '广义费马方程研究'
+description: 'the structure of solutions to the self-referential exponential Diophantine equation'
+tags: ["number theory", "prime number"]
 pubDate: '2026-05-21'
 heroImage: ../../assets/GFME.jpeg
 translation:
   zh: 'GFMEEN'
 draft: false
+featured: true
 ---
 
 ## Abstract

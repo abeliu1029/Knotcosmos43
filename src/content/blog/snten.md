@@ -1,12 +1,14 @@
 ---
 title: 'Algebraic Structure of Symmetric Exponential Functions and Their n-Dimensional Determinant Generalization'
 lang: en
-description: 'Matrix Function Theory'
+description: 'This paper investigates a class of bivariate symmetric exponential functions S(p,q) = p^q + q^p + p^q q^p and their algebraic modifications. '
+tags: ["number theory", "symmetric exponential functions"]
 pubDate: '2026-06-08'
 heroImage: ../../assets/snt.jpeg
 translation:
   zh: 'sntEN'  
 draft: false
+featured: true
 ---
 
 **Abstract**:

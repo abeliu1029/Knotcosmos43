@@ -3,11 +3,13 @@
 title: ' Kitaev honeycomb model  on generalized z4 spin liquids'
 lang: en
 description: 'Kitaev honeycomb model'
+tags: ["physics", "Kitaev honeycomb model"]
 pubDate: '2026-06-09'
 heroImage: ../../assets/khmz4.jpg
 translation:
   zh: 'khmz4EN'
 draft: false
+featured: true
 ---
 **Abstract**
 The success of the Kitaev honeycomb model has inspired extensive research on generalized $Z_N$ spin liquids. However, when generalizing $Z_N$ to vertex degree of freedom models, one often faces obstructions to exact solvability caused by the mismatch between the polygon perimeter and algebraic phases. This paper proposes constructing a $Z_4$ edge degree of freedom model (in the style of the Quantum Double model) on the 4.8.8 lattice (square-octagon tiling). We rigorously prove the perfect commutativity between vertex and plaquette operators, which benefits from the bipartite topological property of the lattice. The ground state exhibits $Z_4$ topological order and exact $Z_4$ 1-form symmetry. By explicitly calculating the topological entanglement entropy ($\gamma = \ln 4$) and the anyonic excitation gap, we quantify the topological robustness of this model. Upon further introducing a chiral perturbation, the system exhibits a physical picture similar to that described in arXiv:2408.02046: the bulk remains gapped, while chiral edge states emerge at the boundary, described by a $c=1$ free boson conformal field theory (CFT). This study provides an obstruction-free lattice regularization framework for higher-order topological orders.

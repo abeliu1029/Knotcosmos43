@@ -2,11 +2,13 @@
 title: 'SO(16,3) 对称性：引力与规范力的统一'
 lang: zh
 description: 'SO(16,3) 对称性：引力与规范力的统一'
+tags: ["物理", "统一理论"]
 pubDate: '2026-01-30'
 heroImage: ../../assets/so163.jpeg
 translation:
   zh: 'so163EN'
 draft: false
+featured: true
 ---
 
 ## 摘要

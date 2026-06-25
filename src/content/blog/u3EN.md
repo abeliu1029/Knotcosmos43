@@ -2,11 +2,13 @@
 title: 'A Unified Theory Based on Three-Dimensional Complex Geometric Structure'
 lang: en
 description: 'A Unified Theory Based on Three-Dimensional Complex Geometric Structure'
+tags: ["physics", "Unification Theory"]
 pubDate: '2026-04-05'
 heroImage: ../../assets/u3.jpeg
 translation:
   zh: 'u3ZN'
 draft: false
+featured: true
 ---
 
 

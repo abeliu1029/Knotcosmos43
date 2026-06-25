@@ -1,12 +1,14 @@
 ---
 title: '矩阵函数量子力学：四种基本力从同一矩阵结构中统一涌现'
 lang: zh
-description: '矩阵函数理论'
+description: '矩阵函数理论，引力对应对角线，规范力对应非对角线'
+tags: ["物理", "矩阵量子力学"]
 pubDate: '2026-01-30'
 heroImage: ../../assets/mfqm1.png
 translation:
   zh: 'mfqmEN'
 draft: false
+featured: true
 ---
 
 ## 摘要

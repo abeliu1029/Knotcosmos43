@@ -2,11 +2,13 @@
 title: 'Matrix Function Quantum Mechanics: Unification of the Four Fundamental Forces Emerging from a Single Matrix Structure'
 lang: en
 description: 'Matrix Function Theory'
+tags: ["physics", "Matrix Function Theory"]
 pubDate: '2026-01-30'
 heroImage: ../../assets/mfqm1.png
 translation:
   zh: 'mfqmZH'  
 draft: false
+featured: true
 ---
 
 ## Abstract

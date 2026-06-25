@@ -3,11 +3,13 @@
 title: 'Kitaev蜂窝模型的Z4对称性推广'
 lang: zh
 description: 'Kitaev蜂窝模型研究'
+tags: ["物理", "Kitaev蜂窝模型研究"]
 pubDate: '2026-06-07'
 heroImage: ../../assets/khmz4.jpg
 translation:
   zh: 'khmz4ZH'
 draft: false
+featured: true
 ---
 
 **摘要**

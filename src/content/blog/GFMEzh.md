@@ -3,11 +3,13 @@
 title: '广义费马方程的素数解的唯一性研究'
 lang: zh
 description: '广义费马方程研究'
+tags: ["数论", "素数"]
 pubDate: '2026-05-21'
 heroImage: ../../assets/GFME.jpeg
 translation:
   zh: 'GFMEZH'
 draft: false
+featured: true
 ---
 ## 摘要
 

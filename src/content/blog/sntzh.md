@@ -1,12 +1,14 @@
 ---
 title: '对称指数函数的代数结构及其n维行列式推广'
 lang: zh
-description: '对称指数函数差值数列研究'
+description: '本文研究了一类双变量对称指数函数 S(p,q) = p^q + q^p + p^q q^p及其代数改造。'
+tags: ["数论", "对称指数函数"]
 pubDate: '2026-06-09'
 heroImage: ../../assets/snt.jpeg
 translation:
   zh: 'sntZH'
 draft: false
+featured: true
 ---
 
 **摘要**：
